@@ -1,0 +1,111 @@
+android {
+    compileSdk 34
+
+    defaultConfig {
+        minSdk 21
+        targetSdk 34
+        versionCode 1
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+        consumerProguardFiles "consumer-rules.pro"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    buildFeatures {
+        viewBinding true
+        compose true
+        buildConfig true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion "1.5.8"
+    }
+
+    compileOptions {
+        /*coreLibraryDesugaringEnabled true*/
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlin {
+        jvmToolchain(17)
+    }
+
+    packagingOptions {
+        resources.excludes.add("/META-INF/{AL2.0,LGPL2.1}")
+        resources.excludes.add("/META-INF/androidx.*")
+        pickFirst("androidsupportmultidexversion.txt")
+    }
+}
+
+dependencies {
+    // Android Core / Arch Components
+    implementation(libs.core.ktx)
+    implementation(libs.appcompat)
+    /*implementation(libs.material)*/
+    implementation(libs.fragments)
+    implementation(libs.activity)
+    implementation(libs.multidex)
+    /*implementation(libs.desugar)*/
+    implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.lifecycle.viewmodel.ktx)
+    implementation(libs.lifecycle.livedata.ktx)
+
+    // Compose
+    implementation(platform(libs.compose.bom))
+    implementation(libs.ui)
+    implementation(libs.ui.android)
+    implementation(libs.ui.graphics)
+    implementation(libs.ui.foundation)
+    implementation(libs.ui.tooling)
+    implementation(libs.ui.tooling.preview)
+    implementation(libs.activity.compose)
+    /*implementation(libs.material3)*/
+    implementation(libs.material3.android)
+    implementation(libs.compose.livedata)
+
+    // My common libs/utils.
+    implementation(libs.android.common) {
+        changing = true
+        exclude group: 'org.jetbrains.compose', module: 'material'
+        exclude group: 'androidx.compose.material3'
+    }
+    implementation(libs.uistate) { changing = true }
+    implementation(libs.uistate.compose) {
+        changing = true
+        exclude group: 'org.jetbrains.compose', module: 'material'
+        exclude group: 'androidx.compose.material3'
+    }
+    implementation(libs.uistate.result.ktx) { changing = true }
+
+    // Logging
+    implementation(libs.stream.log.android)
+
+    // DI
+    implementation(libs.dagger)
+    kapt(libs.dagger.compiler)
+
+    // Testing
+    /*api project(':test-common')*/
+    androidTestImplementation(libs.fragment.test)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.ui.test.junit4)
+    debugImplementation(libs.ui.tooling)
+    debugImplementation(libs.ui.test.manifest)
+}
